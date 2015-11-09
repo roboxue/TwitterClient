@@ -51,3 +51,12 @@ class Tweet: NSObject {
         }
     }
 }
+
+
+protocol TweetDelegate {
+    func retweet(tweet: Tweet)
+    
+    func reply(tweet: Tweet)
+    
+    func fav(tweet: Tweet)
+}

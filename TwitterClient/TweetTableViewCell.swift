@@ -15,6 +15,11 @@ class TweetTableViewCell: UITableViewCell {
     private var _screenameLabel: UILabel!
     private var _tweetLabel: UILabel!
     private var _timeLabel: UILabel!
+    private var _replyButton: UIButton!
+    private var _retweetButton: UIButton!
+    private var _favButton: UIButton!
+    var tweet: Tweet!
+    var delegate: TweetDelegate!
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -32,6 +37,9 @@ class TweetTableViewCell: UITableViewCell {
         addSubview(screennameLabel)
         addSubview(tweetLabel)
         addSubview(timeLabel)
+        addSubview(replyButton)
+        addSubview(favButton)
+        addSubview(retweetButton)
     }
     
     func addLayouts() {
@@ -57,14 +65,27 @@ class TweetTableViewCell: UITableViewCell {
         }
         timeLabel.setContentCompressionResistancePriority(UILayoutPriorityDefaultHigh, forAxis: .Horizontal)
         tweetLabel.snp_makeConstraints { (make) -> Void in
-            make.left.equalTo(profileImage.snp_right).offset(TWSpanSize)
+            make.left.equalTo(usernameLabel)
             make.top.equalTo(usernameLabel.snp_bottom)
             make.right.lessThanOrEqualTo(self).offset(-TWSpanSize)
-            make.bottom.lessThanOrEqualTo(self).offset(-TWSpanSize * 2)
-       }
+        }
+        replyButton.snp_makeConstraints { (make) -> Void in
+            make.left.equalTo(usernameLabel)
+            make.top.equalTo(tweetLabel.snp_bottom)
+            make.bottom.lessThanOrEqualTo(self).offset(-TWSpanSize)
+        }
+        favButton.snp_makeConstraints { (make) -> Void in
+            make.left.equalTo(replyButton.snp_right).offset(40)
+            make.top.equalTo(replyButton)
+        }
+        retweetButton.snp_makeConstraints { (make) -> Void in
+            make.left.equalTo(favButton.snp_right).offset(40)
+            make.top.equalTo(replyButton)
+        }
     }
 
     func initWithTweet(tweet: Tweet) {
+        self.tweet = tweet
         if let profileImageUrl = tweet.user?.profileImageUrl {
             profileImage.af_setImageWithURL(profileImageUrl, filter: RoundedCornersFilter(radius: 2.0))
         }
@@ -77,6 +98,30 @@ class TweetTableViewCell: UITableViewCell {
         formatter.dateStyle = .ShortStyle
         formatter.timeStyle = .NoStyle
         timeLabel.text = tweet.createdAt?.timeAgo(formatter)
+        if let retweeted = tweet.retweeted where retweeted == true {
+            retweetButton.setTitleColor(TWRetweetedColor, forState: .Normal)
+        } else {
+            retweetButton.setTitleColor(TWSecondaryTextColor, forState: .Normal)
+        }
+        if let favorited = tweet.favorited where favorited == true {
+            favButton.setTitleColor(TWHighlightColor, forState: .Normal)
+        } else {
+            favButton.setTitleColor(TWSecondaryTextColor, forState: .Normal)
+        }
+    }
+}
+
+extension TweetTableViewCell {
+    func didPressedReplyButton() {
+        delegate.reply(tweet)
+    }
+    
+    func didPressedFavButton() {
+        delegate.fav(tweet)
+    }
+    
+    func didPressedRetweetButton() {
+        delegate.retweet(tweet)
     }
 }
 
@@ -127,5 +172,37 @@ extension TweetTableViewCell {
             _timeLabel = v
         }
         return _timeLabel
+    }
+    
+    var replyButton: UIButton {
+        if _replyButton == nil {
+            let v = UIButton(type: .System)
+            v.setImage(UIImage(named: "si-glyph-arrow-backward")!.af_imageScaledToSize(CGSizeMake(15, 15)), forState: .Normal)
+            v.addTarget(self, action: "didPressedReplyButton", forControlEvents: .TouchUpInside)
+            v.setTitleColor(TWSecondaryTextColor, forState: .Normal)
+            _replyButton = v
+        }
+        return _replyButton
+    }
+    
+    var retweetButton: UIButton {
+        if _retweetButton == nil {
+            let v = UIButton(type: .System)
+            v.setImage(UIImage(named: "si-glyph-arrow-change")!.af_imageScaledToSize(CGSizeMake(15, 15)), forState: .Normal)
+            v.addTarget(self, action: "didPressedRetweetButton", forControlEvents: .TouchUpInside)
+            _retweetButton = v
+        }
+        return _retweetButton
+    }
+    
+    var favButton: UIButton {
+        if _favButton == nil {
+            let v = UIButton(type: .System)
+            v.setImage(UIImage(named: "si-glyph-bookmark")!.af_imageScaledToSize(CGSizeMake(15, 15)), forState: .Normal)
+            v.addTarget(self, action: "didPressedFavButton", forControlEvents: .TouchUpInside)
+            v.setTitleColor(TWSecondaryTextColor, forState: .Normal)
+            _favButton = v
+        }
+        return _favButton
     }
 }

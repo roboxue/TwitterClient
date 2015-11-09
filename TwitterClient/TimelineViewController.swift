@@ -65,6 +65,33 @@ extension TimelineViewController {
     }
 }
 
+extension TimelineViewController: TweetDelegate {
+    func reply(tweet: Tweet) {
+        let replyScreen = ComposeViewController()
+        replyScreen.inReplyTo = tweet
+        navigationController?.pushViewController(replyScreen, animated: true)
+    }
+    
+    func fav(tweet: Tweet) {
+        TWApi.favorite(!(tweet.favorited ?? true), id: tweet.id!) { (updatedTweet, error) -> Void in
+            if let updatedTweet = updatedTweet {
+                tweet.favorited = updatedTweet.favorited
+                self.refreshUI()
+            }
+        }
+    }
+    
+    func retweet(tweet: Tweet) {
+        TWApi.retweet(tweet.id!) { (updatedTweet, error) -> Void in
+            if let updatedTweet = updatedTweet {
+                tweet.retweeted = updatedTweet.retweeted
+                self.refreshUI()
+            }
+        }
+    }
+}
+
+
 extension TimelineViewController: UITableViewDataSource {
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return tweets.count
@@ -79,6 +106,7 @@ extension TimelineViewController: UITableViewDataSource {
             cell = TweetTableViewCell(style: .Default, reuseIdentifier: reuseId)
         }
         let tweet = tweets[indexPath.row]
+        cell.delegate = self
         cell.initWithTweet(tweet)
         return cell
     }
