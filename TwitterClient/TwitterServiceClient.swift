@@ -14,10 +14,19 @@ import SwiftSpinner
 private let twitterConsumerKey = "K9ryTdR2ukcBMY3VKhacHRrJb"
 private let twitterConsumerSecret = "R8r4Om9WRL9A4ouHJjJ1U2F6FaIkviK14N7ddFM1tpmLsyorA5"
 private let twitterBaseUrl = NSURL(string: "https://api.twitter.com")!
-
+let oauthTokenUserDefaultsKey = "oauth_token"
+let oauthTokenSecretUserDefaultsKey = "oauth_token_secret"
 
 class TwitterServiceClient: BDBOAuth1RequestOperationManager {
-    private(set) var currentUser: User?
+    private var _currentUser: User?
+    private(set) var currentUser: User? {
+        get {
+            return _currentUser
+        }
+        set {
+            _currentUser = newValue
+        }
+    }
     private var loginCompletion: ((User?, NSError?) -> Void)!
     
     func loginWithCompletion(completion: (User?, NSError?) -> Void) {
@@ -31,15 +40,23 @@ class TwitterServiceClient: BDBOAuth1RequestOperationManager {
     
     func getAccessToken(url: NSURL) {
         fetchAccessTokenWithPath("oauth/access_token", method: "POST", requestToken: BDBOAuth1Credential(queryString: url.query), success: { (credential) -> Void in
-            self.requestSerializer.saveAccessToken(credential)
-            self.verifyCredentials(self.loginCompletion)
+            NSUserDefaults.standardUserDefaults().setObject(credential.token, forKey: oauthTokenUserDefaultsKey)
+            NSUserDefaults.standardUserDefaults().setObject(credential.secret, forKey: oauthTokenSecretUserDefaultsKey)
+            self.recoverUserSession(credential, completion: self.loginCompletion)
         }) { (error) -> Void in
             self.handleError("get access token", error: error)
         }
     }
     
+    func recoverUserSession(credential: BDBOAuth1Credential, completion: (User?, NSError?) -> Void) {
+        self.requestSerializer.saveAccessToken(credential)
+        self.verifyCredentials(completion)
+    }
+    
     func logout() {
         currentUser = nil
+        NSUserDefaults.standardUserDefaults().removeObjectForKey(oauthTokenUserDefaultsKey)
+        NSUserDefaults.standardUserDefaults().removeObjectForKey(oauthTokenSecretUserDefaultsKey)
         requestSerializer.removeAccessToken()
     }
     
