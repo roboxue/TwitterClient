@@ -2,13 +2,13 @@
 
 **TwitterClient** is a basic twitter app to read and compose tweets the [Twitter API](https://apps.twitter.com/).
 
-Time spent: **0** hours spent in total
+Time spent: **4** hours spent in total
 
 ## User Stories
 
 The following **required** functionality is completed:
 
-- [ ] User can sign in using OAuth login flow.
+- [x] User can sign in using OAuth login flow.
 - [ ] User can view last 20 tweets from their home timeline.
 - [ ] The current signed in user will be persisted across restarts.
 - [ ] In the home timeline, user can view tweet with the user profile picture, username, tweet text, and timestamp.  In other words, design the custom cell with the proper Auto Layout settings.  You will also need to augment the model classes.
