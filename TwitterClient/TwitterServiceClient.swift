@@ -53,6 +53,20 @@ class TwitterServiceClient: BDBOAuth1RequestOperationManager {
         self.verifyCredentials(completion)
     }
     
+    func updateStatus(tweet: String, replyTo: Int? = nil, completion: (Tweet?, NSError?) -> Void) {
+        var payload = ["status": tweet]
+        if let replyTo = replyTo {
+            payload["in_reply_to_status_id"] = String(replyTo)
+        }
+        POST("1.1/statuses/update.json", parameters: payload, success: { (operation, response) -> Void in
+            let tweet = Tweet(dictionary: response as! NSDictionary)
+            completion(tweet, nil)
+        }) { (operation, error) -> Void in
+            self.handleError("update status", error: error)
+            completion(nil, error)
+        }
+    }
+    
     func logout() {
         currentUser = nil
         NSUserDefaults.standardUserDefaults().removeObjectForKey(oauthTokenUserDefaultsKey)
