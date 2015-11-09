@@ -31,6 +31,14 @@ class Tweet: NSObject {
         return self.dictionary["id"] as? Int
     }()
     
+    lazy var favorited: Bool? = { () -> Bool? in
+        return self.dictionary["favorited"] as? Bool
+    }()
+    
+    lazy var retweeted: Bool? = { () -> Bool? in
+        return self.dictionary["retweeted"] as? Bool
+    }()
+    
     private let dictionary: NSDictionary
     
     init(dictionary: NSDictionary) {

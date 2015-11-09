@@ -16,6 +16,8 @@ class ComposeViewController: TWBaseViewController {
     private var _screennameLabel: UILabel!
     private var _tweetInput: UITextView!
     private var _tweetButton: UIBarButtonItem!
+    private var _replyToLabel: UILabel!
+    var inReplyTo: Tweet?
     
     override func addSubviews() {
         navigationItem.rightBarButtonItem = tweetButton
@@ -23,6 +25,7 @@ class ComposeViewController: TWBaseViewController {
         view.addSubview(usernameLabel)
         view.addSubview(screennameLabel)
         view.addSubview(tweetInput)
+        view.addSubview(replyToLabel)
     }
     
     override func addLayouts() {
@@ -40,8 +43,12 @@ class ComposeViewController: TWBaseViewController {
             make.top.equalTo(usernameLabel.snp_bottom).offset(TWSpanSize)
             make.left.equalTo(profileImage.snp_right).offset(TWSpanSize)
         }
-        tweetInput.snp_makeConstraints { (make) -> Void in
+        replyToLabel.snp_makeConstraints { (make) -> Void in
             make.top.equalTo(profileImage.snp_bottom).offset(TWSpanSize)
+            make.left.equalTo(profileImage)
+        }
+        tweetInput.snp_makeConstraints { (make) -> Void in
+            make.top.equalTo(replyToLabel.snp_bottom).offset(2 * TWSpanSize)
             make.left.equalTo(profileImage)
             make.right.equalTo(view).offset(-TWSpanSize * 2)
             make.bottom.equalTo(snp_bottomLayoutGuideTop)
@@ -58,6 +65,10 @@ class ComposeViewController: TWBaseViewController {
                 profileImage.af_setImageWithURL(imageUrl, filter: RoundedCornersFilter(radius: 2.0))
             }
         }
+        if let inReplyTo = inReplyTo {
+            replyToLabel.text = "In reply to \(inReplyTo.user!.name!)"
+            tweetInput.text = "@\(inReplyTo.user!.screenname!) "
+        }
         tweetInput.becomeFirstResponder()
     }
 }
@@ -65,7 +76,7 @@ class ComposeViewController: TWBaseViewController {
 extension ComposeViewController {
     func didPressedTweetButton() {
         let tweet = tweetInput.text
-        TWApi.updateStatus(tweet) { (tweet, error) -> Void in
+        TWApi.updateStatus(tweet, replyTo: inReplyTo?.id) { (tweet, error) -> Void in
             if let _ = tweet {
                 self.navigationController?.popViewControllerAnimated(true)
             }
@@ -125,5 +136,15 @@ extension ComposeViewController {
             _tweetButton = v
         }
         return _tweetButton
+    }
+    
+    var replyToLabel: UILabel {
+        if _replyToLabel == nil {
+            let v = UILabel()
+            v.font = TWContentFont
+            v.textColor = TWSecondaryTextColor
+            _replyToLabel = v
+        }
+        return _replyToLabel
     }
 }

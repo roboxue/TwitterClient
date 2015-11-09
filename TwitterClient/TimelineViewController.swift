@@ -87,6 +87,9 @@ extension TimelineViewController: UITableViewDataSource {
 extension TimelineViewController: UITableViewDelegate {
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        let statusVC = TweetViewController()
+        statusVC.tweet = tweets[indexPath.row]
+        navigationController?.pushViewController(statusVC, animated: true)
     }
 }
 

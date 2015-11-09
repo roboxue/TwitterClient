@@ -67,6 +67,29 @@ class TwitterServiceClient: BDBOAuth1RequestOperationManager {
         }
     }
     
+    func favorite(create: Bool, id: Int, completion: (Tweet?, NSError?) -> Void) {
+        let payload = ["id": String(id)]
+        let url = create ? "1.1/favorites/create.json" : "1.1/favorites/destroy.json"
+        POST(url, parameters: payload, success: { (operation, response) -> Void in
+            let tweet = Tweet(dictionary: response as! NSDictionary)
+            completion(tweet, nil)
+        }) { (operation, error) -> Void in
+            self.handleError(create ? "fav tweet" : "un-fav tweet", error: error)
+            completion(nil, error)
+        }
+    }
+    
+    func retweet(id: Int, completion: (Tweet?, NSError?) -> Void) {
+        let url = "1.1/statuses/retweet/\(id).json"
+        POST(url, parameters: nil, success: { (operation, response) -> Void in
+            let tweet = Tweet(dictionary: response as! NSDictionary)
+            completion(tweet, nil)
+            }) { (operation, error) -> Void in
+                self.handleError("retweet", error: error)
+                completion(nil, error)
+        }
+    }
+    
     func logout() {
         currentUser = nil
         NSUserDefaults.standardUserDefaults().removeObjectForKey(oauthTokenUserDefaultsKey)
