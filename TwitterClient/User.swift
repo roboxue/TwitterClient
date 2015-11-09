@@ -9,18 +9,22 @@
 import UIKit
 
 class User: NSObject {
-    var name: String? {
-        return dictionary["name"] as? String
-    }
-    var screenname: String? {
-        return dictionary["screen_name"] as? String
-    }
-    var profileImageUrl: String? {
-        return dictionary["profile_image_url"] as? String
-    }
-    var tagline: String? {
-        return dictionary["descirption"] as? String
-    }
+    lazy var name: String? = {() -> String? in
+        return self.dictionary["name"] as? String
+    }()
+    lazy var screenname: String? = {() -> String? in
+        return self.dictionary["screen_name"] as? String
+    }()
+    lazy var profileImageUrl: NSURL? = {() -> NSURL? in
+        if let url = self.dictionary["profile_image_url_https"] as? String {
+            return NSURL(string: url)
+        } else {
+            return nil
+        }
+    }()
+    lazy var tagline: String? = {() -> String? in
+        return self.dictionary["descirption"] as? String
+    }()
 
     private let dictionary: NSDictionary
     

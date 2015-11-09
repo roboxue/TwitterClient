@@ -16,6 +16,7 @@
 		A16F2CEB1BF023C200E773BF /* TWBaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A16F2CEA1BF023C200E773BF /* TWBaseViewController.swift */; };
 		A16F2CEE1BF02EC300E773BF /* TimelineViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A16F2CED1BF02EC300E773BF /* TimelineViewController.swift */; };
 		A16F2CF01BF032DB00E773BF /* TweetTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A16F2CEF1BF032DB00E773BF /* TweetTableViewCell.swift */; };
+		A16F2CF51BF055A300E773BF /* TimeAgoExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A16F2CF41BF055A300E773BF /* TimeAgoExtension.swift */; };
 		A1B02D831BE995260052429D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B02D821BE995260052429D /* AppDelegate.swift */; };
 		A1B02D8A1BE995260052429D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1B02D891BE995260052429D /* Assets.xcassets */; };
 		A1B02D8D1BE995260052429D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A1B02D8B1BE995260052429D /* LaunchScreen.storyboard */; };
@@ -31,6 +32,7 @@
 		A16F2CEA1BF023C200E773BF /* TWBaseViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TWBaseViewController.swift; sourceTree = "<group>"; };
 		A16F2CED1BF02EC300E773BF /* TimelineViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimelineViewController.swift; sourceTree = "<group>"; };
 		A16F2CEF1BF032DB00E773BF /* TweetTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TweetTableViewCell.swift; sourceTree = "<group>"; };
+		A16F2CF41BF055A300E773BF /* TimeAgoExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeAgoExtension.swift; sourceTree = "<group>"; };
 		A1B02D7F1BE995260052429D /* TwitterClient.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TwitterClient.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A1B02D821BE995260052429D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A1B02D891BE995260052429D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -75,6 +77,7 @@
 				A16F2CE21BEFF8D300E773BF /* TwitterServiceClient.swift */,
 				A16F2CE41BF001ED00E773BF /* Tweet.swift */,
 				A16F2CE61BF0030400E773BF /* User.swift */,
+				A16F2CF41BF055A300E773BF /* TimeAgoExtension.swift */,
 			);
 			name = API;
 			sourceTree = "<group>";
@@ -253,6 +256,7 @@
 			files = (
 				A16F2CE91BF023AE00E773BF /* LoginViewController.swift in Sources */,
 				A1B02D831BE995260052429D /* AppDelegate.swift in Sources */,
+				A16F2CF51BF055A300E773BF /* TimeAgoExtension.swift in Sources */,
 				A16F2CF01BF032DB00E773BF /* TweetTableViewCell.swift in Sources */,
 				A16F2CE31BEFF8D300E773BF /* TwitterServiceClient.swift in Sources */,
 				A16F2CE01BEFF60300E773BF /* LayoutConstants.swift in Sources */,
@@ -363,10 +367,12 @@
 			baseConfigurationReference = D6A9F824DB248D035902091D /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = TwitterClient/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.roboxue.TwitterClient;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
@@ -375,6 +381,7 @@
 			baseConfigurationReference = F87B1D3D93977DE3BA530930 /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = TwitterClient/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.roboxue.TwitterClient;

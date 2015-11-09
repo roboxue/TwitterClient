@@ -27,7 +27,6 @@ class Tweet: NSObject {
         return formatter.dateFromString((self.dictionary["created_at"] as! String))
     }()
     
-    
     private let dictionary: NSDictionary
     
     init(dictionary: NSDictionary) {

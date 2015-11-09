@@ -61,7 +61,7 @@ extension TimelineViewController: UITableViewDataSource {
         if let reuseCell = tableView.dequeueReusableCellWithIdentifier(reuseId) as? TweetTableViewCell {
             cell = reuseCell
         } else {
-            cell = TweetTableViewCell(style: .Value1, reuseIdentifier: reuseId)
+            cell = TweetTableViewCell(style: .Default, reuseIdentifier: reuseId)
         }
         let tweet = tweets[indexPath.row]
         cell.initWithTweet(tweet)
@@ -89,6 +89,9 @@ extension TimelineViewController {
             let v = UITableView()
             v.dataSource = self
             v.delegate = self
+            v.estimatedRowHeight = 120
+            v.rowHeight = UITableViewAutomaticDimension
+            v.tableFooterView = UIView()
             _tableView = v
         }
         return _tableView
