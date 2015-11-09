@@ -10,8 +10,14 @@ import UIKit
 
 class TimelineViewController: TWBaseViewController {
     private var _signOutButton: UIBarButtonItem!
-    private var tweets = [Tweet]()
+    private var tweets = Array<Tweet>()
+    private var highestId: Int? {
+        return tweets.isEmpty ? nil : tweets.flatMap({ (tweet) -> Int? in
+            return tweet.id
+        }).maxElement()
+    }
     private var _tableView: UITableView!
+    private var _refreshControl: UIRefreshControl!
     
     override func addSubviews() {
         navigationItem.leftBarButtonItem = signOutButton
@@ -28,9 +34,12 @@ class TimelineViewController: TWBaseViewController {
     }
     
     override func refreshUI() {
-        TWApi.getTimeline { (tweets, _) -> Void in
+        TWApi.getTimeline(highestId) { (tweets, _) -> Void in
             if let tweets = tweets {
-                self.tweets = tweets
+                self.refreshControl.endRefreshing()
+                self.tweets = Set(self.tweets).union(tweets).sort({ (left, right) -> Bool in
+                    return left.id! > right.id!
+                })
                 debugPrint("got \(tweets.count) tweets")
                 self.tableView.reloadData()
             }
@@ -92,8 +101,18 @@ extension TimelineViewController {
             v.estimatedRowHeight = 120
             v.rowHeight = UITableViewAutomaticDimension
             v.tableFooterView = UIView()
+            v.addSubview(refreshControl)
             _tableView = v
         }
         return _tableView
+    }
+    
+    var refreshControl: UIRefreshControl {
+        if _refreshControl == nil {
+            let v = UIRefreshControl()
+            v.addTarget(self, action: "refreshUI", forControlEvents: .ValueChanged)
+            _refreshControl = v
+        }
+        return _refreshControl
     }
 }

@@ -27,6 +27,10 @@ class Tweet: NSObject {
         return formatter.dateFromString((self.dictionary["created_at"] as! String))
     }()
     
+    lazy var id: Int? = { () -> Int? in
+        return self.dictionary["id"] as? Int
+    }()
+    
     private let dictionary: NSDictionary
     
     init(dictionary: NSDictionary) {

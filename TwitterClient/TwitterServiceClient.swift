@@ -60,8 +60,16 @@ class TwitterServiceClient: BDBOAuth1RequestOperationManager {
         requestSerializer.removeAccessToken()
     }
     
-    func getTimeline(completion: ([Tweet]?, NSError?) -> Void) {
-        GET("1.1/statuses/home_timeline.json", parameters: ["count": 20], success: { (operation, response) -> Void in
+    func getTimeline(since_id: Int? = nil, max_id: Int? = nil, completion: ([Tweet]?, NSError?) -> Void) {
+        var parameters = ["count": "20"]
+        if let max_id = max_id {
+            parameters["max_id"] = String(max_id)
+        }
+        if let since_id = since_id {
+            parameters["since_id"] = String(since_id)
+        }
+        
+        GET("1.1/statuses/home_timeline.json", parameters: parameters, success: { (operation, response) -> Void in
             let tweets = Tweet.tweets(response as! [NSDictionary])
             completion(tweets, nil)
         }) { (operation, error) -> Void in
