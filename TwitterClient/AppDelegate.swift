@@ -21,7 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window = UIWindow(frame: UIScreen.mainScreen().bounds)
         window!.backgroundColor = TWBackgroundColor
         window!.tintColor = TWBlue
-        window!.rootViewController = UINavigationController(rootViewController: LoginViewController())
+        window!.rootViewController = LoginViewController()
         window!.makeKeyAndVisible()
         return true
     }

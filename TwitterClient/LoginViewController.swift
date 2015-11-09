@@ -20,15 +20,25 @@ class LoginViewController: TWBaseViewController {
             make.center.equalTo(view)
         }
     }
+    
+    override func refreshUI() {
+        if let _ = TWApi.currentUser {
+            userDidLogin()
+        }
+    }
 }
 
 extension LoginViewController {
     func didPressedLoginButton() {
         TWApi.loginWithCompletion { (user, error) -> Void in
             if let _ = user {
-                self.navigationController?.pushViewController(UIViewController(), animated: true)
+                self.userDidLogin()
             }
         }
+    }
+    
+    func userDidLogin() {
+        self.presentViewController(UINavigationController(rootViewController: TimelineViewController()), animated: true, completion: nil)
     }
 }
 
