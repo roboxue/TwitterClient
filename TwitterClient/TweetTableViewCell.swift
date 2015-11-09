@@ -74,12 +74,12 @@ class TweetTableViewCell: UITableViewCell {
             make.top.equalTo(tweetLabel.snp_bottom)
             make.bottom.lessThanOrEqualTo(self).offset(-TWSpanSize)
         }
-        favButton.snp_makeConstraints { (make) -> Void in
+        retweetButton.snp_makeConstraints { (make) -> Void in
             make.left.equalTo(replyButton.snp_right).offset(40)
             make.top.equalTo(replyButton)
         }
-        retweetButton.snp_makeConstraints { (make) -> Void in
-            make.left.equalTo(favButton.snp_right).offset(40)
+        favButton.snp_makeConstraints { (make) -> Void in
+            make.left.equalTo(retweetButton.snp_right).offset(40)
             make.top.equalTo(replyButton)
         }
     }
@@ -99,14 +99,14 @@ class TweetTableViewCell: UITableViewCell {
         formatter.timeStyle = .NoStyle
         timeLabel.text = tweet.createdAt?.timeAgo(formatter)
         if let retweeted = tweet.retweeted where retweeted == true {
-            retweetButton.setTitleColor(TWRetweetedColor, forState: .Normal)
+            retweetButton.tintColor = TWRetweetedColor
         } else {
-            retweetButton.setTitleColor(TWSecondaryTextColor, forState: .Normal)
+            retweetButton.tintColor = TWSecondaryTextColor
         }
         if let favorited = tweet.favorited where favorited == true {
-            favButton.setTitleColor(TWHighlightColor, forState: .Normal)
+            favButton.tintColor = TWHighlightColor
         } else {
-            favButton.setTitleColor(TWSecondaryTextColor, forState: .Normal)
+            favButton.tintColor = TWSecondaryTextColor
         }
     }
 }
@@ -179,7 +179,7 @@ extension TweetTableViewCell {
             let v = UIButton(type: .System)
             v.setImage(UIImage(named: "si-glyph-arrow-backward")!.af_imageScaledToSize(CGSizeMake(15, 15)), forState: .Normal)
             v.addTarget(self, action: "didPressedReplyButton", forControlEvents: .TouchUpInside)
-            v.setTitleColor(TWSecondaryTextColor, forState: .Normal)
+            v.tintColor = TWSecondaryTextColor
             _replyButton = v
         }
         return _replyButton
@@ -200,7 +200,6 @@ extension TweetTableViewCell {
             let v = UIButton(type: .System)
             v.setImage(UIImage(named: "si-glyph-bookmark")!.af_imageScaledToSize(CGSizeMake(15, 15)), forState: .Normal)
             v.addTarget(self, action: "didPressedFavButton", forControlEvents: .TouchUpInside)
-            v.setTitleColor(TWSecondaryTextColor, forState: .Normal)
             _favButton = v
         }
         return _favButton

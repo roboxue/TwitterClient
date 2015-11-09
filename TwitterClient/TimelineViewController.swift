@@ -49,7 +49,9 @@ class TimelineViewController: TWBaseViewController {
     }
     
     override func initializeUI() {
-        title = "Home"
+        let twitterIcon = UIImageView(image: UIImage(named: "Twitter")!.af_imageScaledToSize(CGSizeMake(30, 30)))
+        twitterIcon.tintColor = TWBlue
+        navigationItem.titleView = twitterIcon
         automaticallyAdjustsScrollViewInsets = false
     }
 }
@@ -75,7 +77,7 @@ extension TimelineViewController: TweetDelegate {
     func fav(tweet: Tweet) {
         TWApi.favorite(!(tweet.favorited ?? true), id: tweet.id!) { (updatedTweet, error) -> Void in
             if let updatedTweet = updatedTweet {
-                tweet.favorited = updatedTweet.favorited
+                tweet.dictionary = updatedTweet.dictionary
                 self.refreshUI()
             }
         }
@@ -84,7 +86,7 @@ extension TimelineViewController: TweetDelegate {
     func retweet(tweet: Tweet) {
         TWApi.retweet(tweet.id!) { (updatedTweet, error) -> Void in
             if let updatedTweet = updatedTweet {
-                tweet.retweeted = updatedTweet.retweeted
+                tweet.dictionary = updatedTweet.dictionary
                 self.refreshUI()
             }
         }

@@ -16,11 +16,14 @@ class ComposeViewController: TWBaseViewController {
     private var _screennameLabel: UILabel!
     private var _tweetInput: UITextView!
     private var _tweetButton: UIBarButtonItem!
+    private var _wordCount: UIBarButtonItem!
     private var _replyToLabel: UILabel!
     var inReplyTo: Tweet?
     
+    private let wordLimit = 140
+    
     override func addSubviews() {
-        navigationItem.rightBarButtonItem = tweetButton
+        navigationItem.rightBarButtonItems = [tweetButton, wordCount]
         view.addSubview(profileImage)
         view.addSubview(usernameLabel)
         view.addSubview(screennameLabel)
@@ -86,7 +89,14 @@ extension ComposeViewController {
 
 extension ComposeViewController: UITextViewDelegate {
     func textViewDidChange(textView: UITextView) {
-        tweetButton.enabled = !textView.text.isEmpty
+        let remaining = wordLimit - textView.text.utf8.count
+        wordCount.title = String(remaining)
+        if remaining < 0 {
+            wordCount.tintColor = UIColor.redColor()
+        } else {
+            wordCount.tintColor = TWSecondaryTextColor
+        }
+        tweetButton.enabled = !textView.text.isEmpty && remaining >= 0
     }
 }
 
@@ -127,6 +137,15 @@ extension ComposeViewController {
             _tweetInput = v
         }
         return _tweetInput
+    }
+    
+    var wordCount: UIBarButtonItem {
+        if _wordCount == nil {
+            let v = UIBarButtonItem(title: String(wordLimit), style: .Plain, target: self, action: nil)
+            v.tintColor = TWSecondaryTextColor
+            _wordCount = v
+        }
+        return _wordCount
     }
     
     var tweetButton: UIBarButtonItem {

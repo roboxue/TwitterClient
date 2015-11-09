@@ -9,37 +9,37 @@
 import UIKit
 
 class Tweet: NSObject {
-    lazy var user: User? = {() -> User? in
+    var user: User? {
         if let userD = self.dictionary["user"] as? NSDictionary {
             return User(dictionary: userD)
         } else {
             return nil
         }
-    }()
+    }
     
-    lazy var text: String? = { () -> String? in
+    var text: String? {
         return self.dictionary["text"] as? String
-    }()
+    }
     
-    lazy var createdAt: NSDate? = { () -> NSDate? in
+    var createdAt: NSDate? {
         let formatter = NSDateFormatter()
         formatter.dateFormat = "EEE MMM d HH:mm:ss Z y"
         return formatter.dateFromString((self.dictionary["created_at"] as! String))
-    }()
+    }
     
-    lazy var id: Int? = { () -> Int? in
+    var id: Int? {
         return self.dictionary["id"] as? Int
-    }()
+    }
     
-    lazy var favorited: Bool? = { () -> Bool? in
+    var favorited: Bool? {
         return self.dictionary["favorited"] as? Bool
-    }()
+    }
     
-    lazy var retweeted: Bool? = { () -> Bool? in
+    var retweeted: Bool? {
         return self.dictionary["retweeted"] as? Bool
-    }()
+    }
     
-    private let dictionary: NSDictionary
+    var dictionary: NSDictionary
     
     init(dictionary: NSDictionary) {
         self.dictionary = dictionary
