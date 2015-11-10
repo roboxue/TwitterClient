@@ -49,7 +49,7 @@ class TimelineViewController: TWBaseViewController {
     }
     
     override func initializeUI() {
-        let twitterIcon = UIImageView(image: UIImage(named: "Twitter")!.af_imageScaledToSize(CGSizeMake(30, 30)))
+        let twitterIcon = UIImageView(image: UIImage(named: "Twitter")!)
         twitterIcon.tintColor = TWBlue
         navigationItem.titleView = twitterIcon
         automaticallyAdjustsScrollViewInsets = false
@@ -63,7 +63,9 @@ extension TimelineViewController {
     }
     
     func didPressedComposeButton() {
-        navigationController?.pushViewController(ComposeViewController(), animated: true)
+        let composeScreen = ComposeViewController()
+        composeScreen.delegate = self
+        navigationController?.pushViewController(composeScreen, animated: true)
     }
 }
 
@@ -78,7 +80,7 @@ extension TimelineViewController: TweetDelegate {
         TWApi.favorite(!(tweet.favorited ?? true), id: tweet.id!) { (updatedTweet, error) -> Void in
             if let updatedTweet = updatedTweet {
                 tweet.dictionary = updatedTweet.dictionary
-                self.refreshUI()
+                self.tableView.reloadData()
             }
         }
     }
@@ -87,12 +89,20 @@ extension TimelineViewController: TweetDelegate {
         TWApi.retweet(tweet.id!) { (updatedTweet, error) -> Void in
             if let updatedTweet = updatedTweet {
                 tweet.dictionary = updatedTweet.dictionary
-                self.refreshUI()
+                self.tableView.reloadData()
             }
         }
     }
 }
 
+extension TimelineViewController: ComposeViewControllerDelegate {
+    func didComposedTweet(tweet: Tweet) {
+        tweets.append(tweet)
+        tweets.sortInPlace({ (left, right) -> Bool in
+            return left.id! > right.id!
+        })
+    }
+}
 
 extension TimelineViewController: UITableViewDataSource {
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -144,6 +154,7 @@ extension TimelineViewController {
         if _tableView == nil {
             let v = UITableView()
             v.dataSource = self
+            v.backgroundColor = UIColor.lightGrayColor()
             v.delegate = self
             v.estimatedRowHeight = 120
             v.rowHeight = UITableViewAutomaticDimension

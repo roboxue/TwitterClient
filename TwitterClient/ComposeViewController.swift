@@ -18,6 +18,7 @@ class ComposeViewController: TWBaseViewController {
     private var _tweetButton: UIBarButtonItem!
     private var _wordCount: UIBarButtonItem!
     private var _replyToLabel: UILabel!
+    var delegate: ComposeViewControllerDelegate?
     var inReplyTo: Tweet?
     
     private let wordLimit = 140
@@ -80,7 +81,8 @@ extension ComposeViewController {
     func didPressedTweetButton() {
         let tweet = tweetInput.text
         TWApi.updateStatus(tweet, replyTo: inReplyTo?.id) { (tweet, error) -> Void in
-            if let _ = tweet {
+            if let tweet = tweet {
+                self.delegate?.didComposedTweet(tweet)
                 self.navigationController?.popViewControllerAnimated(true)
             }
         }
@@ -166,4 +168,8 @@ extension ComposeViewController {
         }
         return _replyToLabel
     }
+}
+
+protocol ComposeViewControllerDelegate {
+    func didComposedTweet(tweet: Tweet)
 }

@@ -45,7 +45,7 @@ class TweetTableViewCell: UITableViewCell {
     func addLayouts() {
         profileImage.snp_makeConstraints { (make) -> Void in
             make.left.equalTo(self).offset(TWSpanSize * 2)
-            make.top.equalTo(self).offset(TWSpanSize)
+            make.top.equalTo(self).offset(TWSpanSize * 2)
             make.width.equalTo(48)
             make.height.equalTo(48)
             make.bottom.lessThanOrEqualTo(self).offset(-TWSpanSize * 2)
@@ -71,7 +71,7 @@ class TweetTableViewCell: UITableViewCell {
         }
         replyButton.snp_makeConstraints { (make) -> Void in
             make.left.equalTo(usernameLabel)
-            make.top.equalTo(tweetLabel.snp_bottom)
+            make.top.equalTo(tweetLabel.snp_bottom).offset(TWSpanSize)
             make.bottom.lessThanOrEqualTo(self).offset(-TWSpanSize)
         }
         retweetButton.snp_makeConstraints { (make) -> Void in
