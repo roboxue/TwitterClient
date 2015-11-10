@@ -2,7 +2,7 @@
 
 **TwitterClient** is a basic twitter app to read and compose tweets the [Twitter API](https://apps.twitter.com/).
 
-Time spent: **10** hours spent in total
+Time spent: **13** hours spent in total
 
 ## User Stories
 
@@ -28,12 +28,13 @@ The following **optional** features are implemented:
 
 The following **additional** features are implemented:
 
-- [ ] List anything else that you can get done to improve the app functionality!
+- [x] Allow user to exceed the 140 limitation, but show the word count in red and disable the tweet button.
 
 ## Video Walkthrough
 
 Here's a walkthrough of implemented user stories:
 
+![Video Walkthrough](WalkThrough.gif)
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
