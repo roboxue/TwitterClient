@@ -35,8 +35,16 @@ class Tweet: NSObject {
         return self.dictionary["favorited"] as? Bool
     }
     
+    var favouritesCount: Int? {
+        return self.dictionary["favorite_count"] as? Int
+    }
+    
     var retweeted: Bool? {
         return self.dictionary["retweeted"] as? Bool
+    }
+    
+    var retweetCount: Int? {
+        return self.dictionary["retweet_count"] as? Int
     }
     
     var dictionary: NSDictionary

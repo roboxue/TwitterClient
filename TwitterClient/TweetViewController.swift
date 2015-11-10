@@ -20,6 +20,10 @@ class TweetViewController: TWBaseViewController {
     private var _replyButton: UIBarButtonItem!
     private var _retweetButton: UIBarButtonItem!
     private var _favButton: UIBarButtonItem!
+    private var _retweetCountLabel: UILabel!
+    private var _favCountLabel: UILabel!
+    private var _saperator: UIView!
+
 
     override func initializeUI() {
         view.backgroundColor = TWBackgroundColor
@@ -31,6 +35,9 @@ class TweetViewController: TWBaseViewController {
         view.addSubview(screennameLabel)
         view.addSubview(tweetView)
         view.addSubview(timeLabel)
+        view.addSubview(saperator)
+        view.addSubview(retweetCountLabel)
+        view.addSubview(favCountLabel)
         view.addSubview(toolbar)
     }
     
@@ -58,8 +65,23 @@ class TweetViewController: TWBaseViewController {
             make.top.equalTo(tweetView.snp_bottom).offset(TWSpanSize)
             make.left.equalTo(tweetView)
         }
+        saperator.snp_makeConstraints { (make) -> Void in
+            make.height.equalTo(0.5)
+            make.top.equalTo(timeLabel.snp_bottom).offset(TWSpanSize * 2)
+            make.left.equalTo(view).offset(TWSpanSize * 2)
+            make.right.equalTo(view).offset(-TWSpanSize * 2)
+        }
+        retweetCountLabel.snp_makeConstraints { (make) -> Void in
+            make.top.equalTo(saperator.snp_bottom).offset(TWSpanSize * 2)
+            make.left.equalTo(tweetView)
+        }
+        favCountLabel.snp_makeConstraints { (make) -> Void in
+            make.top.equalTo(saperator.snp_bottom).offset(TWSpanSize * 2)
+            make.left.equalTo(retweetCountLabel.snp_right).offset(TWSpanSize)
+        }
         toolbar.snp_makeConstraints { (make) -> Void in
-            make.top.equalTo(timeLabel.snp_bottom).offset(TWSpanSize)
+            make.top.greaterThanOrEqualTo(retweetCountLabel.snp_bottom).offset(TWSpanSize * 2)
+            make.top.greaterThanOrEqualTo(favCountLabel.snp_bottom).offset(TWSpanSize)
             make.left.equalTo(view)
             make.right.equalTo(view)
         }
@@ -93,6 +115,22 @@ class TweetViewController: TWBaseViewController {
             retweetButton.tintColor = TWRetweetedColor
         } else {
             retweetButton.tintColor = TWSecondaryTextColor
+        }
+        
+        if let retweetCount = tweet.retweetCount where retweetCount > 0 {
+            let countText = NSMutableAttributedString(string: String(retweetCount), attributes: [NSForegroundColorAttributeName: UIColor.blackColor(), NSFontAttributeName: TWContentFont])
+            countText.appendAttributedString(NSAttributedString(string: retweetCount > 1 ? " RETWEETS" : " RETWEET", attributes: [NSForegroundColorAttributeName: TWSecondaryTextColor, NSFontAttributeName: TWContentFont]))
+            retweetCountLabel.attributedText = countText
+        } else {
+            retweetCountLabel.attributedText = nil
+        }
+
+        if let favCount = tweet.favouritesCount where favCount > 0 {
+            let countText = NSMutableAttributedString(string: String(favCount), attributes: [NSForegroundColorAttributeName: UIColor.blackColor(), NSFontAttributeName: TWContentFont])
+            countText.appendAttributedString(NSAttributedString(string: favCount > 1 ? " LIKES" : " LIKE", attributes: [NSForegroundColorAttributeName: TWSecondaryTextColor, NSFontAttributeName: TWContentFont]))
+            favCountLabel.attributedText = countText
+        } else {
+            favCountLabel.attributedText = nil
         }
     }
 }
@@ -207,5 +245,34 @@ extension TweetViewController {
             _favButton = v
         }
         return _favButton
+    }
+
+    var retweetCountLabel: UILabel {
+        if _retweetCountLabel == nil {
+            let v = UILabel()
+            v.textColor = TWSecondaryTextColor
+            v.font = TWContentFont
+            _retweetCountLabel = v
+        }
+        return _retweetCountLabel
+    }
+    
+    var favCountLabel: UILabel {
+        if _favCountLabel == nil {
+            let v = UILabel()
+            v.textColor = TWSecondaryTextColor
+            v.font = TWContentFont
+            _favCountLabel = v
+        }
+        return _favCountLabel
+    }
+    
+    var saperator: UIView {
+        if _saperator == nil {
+            let v = UIView()
+            v.backgroundColor = TWSecondaryTextColor
+            _saperator = v
+        }
+        return _saperator
     }
 }

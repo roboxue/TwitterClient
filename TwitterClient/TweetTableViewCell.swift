@@ -17,7 +17,9 @@ class TweetTableViewCell: UITableViewCell {
     private var _timeLabel: UILabel!
     private var _replyButton: UIButton!
     private var _retweetButton: UIButton!
+    private var _retweetCountLabel: UILabel!
     private var _favButton: UIButton!
+    private var _favCountLabel: UILabel!
     var tweet: Tweet!
     var delegate: TweetDelegate!
     
@@ -38,8 +40,10 @@ class TweetTableViewCell: UITableViewCell {
         addSubview(tweetLabel)
         addSubview(timeLabel)
         addSubview(replyButton)
-        addSubview(favButton)
         addSubview(retweetButton)
+        addSubview(retweetCountLabel)
+        addSubview(favButton)
+        addSubview(favCountLabel)
     }
     
     func addLayouts() {
@@ -78,9 +82,19 @@ class TweetTableViewCell: UITableViewCell {
             make.left.equalTo(replyButton.snp_right).offset(40)
             make.top.equalTo(replyButton)
         }
+        retweetCountLabel.snp_makeConstraints { (make) -> Void in
+            make.left.equalTo(retweetButton.snp_right).offset(2)
+            make.right.lessThanOrEqualTo(favButton.snp_left)
+            make.centerY.equalTo(retweetButton)
+        }
+        retweetCountLabel.setContentCompressionResistancePriority(UILayoutPriorityDefaultLow, forAxis: .Horizontal)
         favButton.snp_makeConstraints { (make) -> Void in
             make.left.equalTo(retweetButton.snp_right).offset(40)
             make.top.equalTo(replyButton)
+        }
+        favCountLabel.snp_makeConstraints { (make) -> Void in
+            make.left.equalTo(favButton.snp_right)
+            make.centerY.equalTo(favButton)
         }
     }
 
@@ -99,14 +113,28 @@ class TweetTableViewCell: UITableViewCell {
         formatter.timeStyle = .NoStyle
         timeLabel.text = tweet.createdAt?.timeAgo(formatter)
         if let retweeted = tweet.retweeted where retweeted == true {
+            retweetButton.setTitleColor(TWRetweetedColor, forState: .Normal)
             retweetButton.tintColor = TWRetweetedColor
         } else {
+            retweetButton.setTitleColor(TWSecondaryTextColor, forState: .Normal)
             retweetButton.tintColor = TWSecondaryTextColor
         }
         if let favorited = tweet.favorited where favorited == true {
+            favButton.setTitleColor(TWHighlightColor, forState: .Normal)
             favButton.tintColor = TWHighlightColor
         } else {
+            favButton.setTitleColor(TWSecondaryTextColor, forState: .Normal)
             favButton.tintColor = TWSecondaryTextColor
+        }
+        if let retweetCount = tweet.retweetCount where retweetCount > 0 {
+            retweetCountLabel.text = String(retweetCount)
+        } else {
+            retweetCountLabel.text = ""
+        }
+        if let favouritesCount = tweet.favouritesCount where favouritesCount > 0 {
+            favCountLabel.text = String(favouritesCount)
+        } else {
+            favCountLabel.text = ""
         }
     }
 }
@@ -203,5 +231,25 @@ extension TweetTableViewCell {
             _favButton = v
         }
         return _favButton
+    }
+    
+    var retweetCountLabel: UILabel {
+        if _retweetCountLabel == nil {
+            let v = UILabel()
+            v.textColor = TWSecondaryTextColor
+            v.font = TWContentFont
+            _retweetCountLabel = v
+        }
+        return _retweetCountLabel
+    }
+
+    var favCountLabel: UILabel {
+        if _favCountLabel == nil {
+            let v = UILabel()
+            v.textColor = TWSecondaryTextColor
+            v.font = TWContentFont
+            _favCountLabel = v
+        }
+        return _favCountLabel
     }
 }
