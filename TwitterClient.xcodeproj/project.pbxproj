@@ -22,6 +22,8 @@
 		A1B02D831BE995260052429D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B02D821BE995260052429D /* AppDelegate.swift */; };
 		A1B02D8A1BE995260052429D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1B02D891BE995260052429D /* Assets.xcassets */; };
 		A1B02D8D1BE995260052429D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A1B02D8B1BE995260052429D /* LaunchScreen.storyboard */; };
+		A1F09A021BF833430063D113 /* TWHamburgerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F09A011BF833430063D113 /* TWHamburgerViewController.swift */; };
+		A1F09A041BF84A430063D113 /* MenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F09A031BF84A430063D113 /* MenuViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,6 +44,8 @@
 		A1B02D891BE995260052429D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A1B02D8C1BE995260052429D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A1B02D8E1BE995260052429D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A1F09A011BF833430063D113 /* TWHamburgerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TWHamburgerViewController.swift; sourceTree = "<group>"; };
+		A1F09A031BF84A430063D113 /* MenuViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuViewController.swift; sourceTree = "<group>"; };
 		D6A9F824DB248D035902091D /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		F87B1D3D93977DE3BA530930 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -94,6 +98,7 @@
 				A16F2CF61BF066F300E773BF /* ComposeViewController.swift */,
 				A16F2CEF1BF032DB00E773BF /* TweetTableViewCell.swift */,
 				A16F2CF81BF071E100E773BF /* TweetViewController.swift */,
+				A1F09A031BF84A430063D113 /* MenuViewController.swift */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -127,6 +132,7 @@
 				A1B02D8B1BE995260052429D /* LaunchScreen.storyboard */,
 				A1B02D8E1BE995260052429D /* Info.plist */,
 				A16F2CEA1BF023C200E773BF /* TWBaseViewController.swift */,
+				A1F09A011BF833430063D113 /* TWHamburgerViewController.swift */,
 			);
 			path = TwitterClient;
 			sourceTree = "<group>";
@@ -262,6 +268,8 @@
 			files = (
 				A16F2CE91BF023AE00E773BF /* LoginViewController.swift in Sources */,
 				A1B02D831BE995260052429D /* AppDelegate.swift in Sources */,
+				A1F09A021BF833430063D113 /* TWHamburgerViewController.swift in Sources */,
+				A1F09A041BF84A430063D113 /* MenuViewController.swift in Sources */,
 				A16F2CF51BF055A300E773BF /* TimeAgoExtension.swift in Sources */,
 				A16F2CF01BF032DB00E773BF /* TweetTableViewCell.swift in Sources */,
 				A16F2CE31BEFF8D300E773BF /* TwitterServiceClient.swift in Sources */,

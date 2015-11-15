@@ -21,7 +21,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window = UIWindow(frame: UIScreen.mainScreen().bounds)
         window!.backgroundColor = TWBackgroundColor
         window!.tintColor = TWBlue
-        window!.rootViewController = LoginViewController()
+        let rootViewController = TWHamburgerViewController()
+        rootViewController.leftViewController = UINavigationController(rootViewController: MenuViewController())
+        window!.rootViewController = rootViewController
         window!.makeKeyAndVisible()
         return true
     }

@@ -11,10 +11,12 @@ import BDBOAuth1Manager
 import SwiftSpinner
 
 class LoginViewController: TWBaseViewController {
-    var _loginButton: UIButton!
+    private var _loginButton: UIButton!
+    var delegate: LoginViewControllerDelegate?
     
     override func addSubviews() {
         view.addSubview(loginButton)
+        view.backgroundColor = TWBackgroundColor
     }
     
     override func addLayouts() {
@@ -24,15 +26,15 @@ class LoginViewController: TWBaseViewController {
     }
     
     override func refreshUI() {
-        if let _ = TWApi.currentUser {
-            userDidLogin()
+        if let user = TWApi.currentUser {
+            delegate?.UserDidLogIn(user)
         } else if let token = NSUserDefaults.standardUserDefaults().stringForKey(oauthTokenUserDefaultsKey), secret = NSUserDefaults.standardUserDefaults().stringForKey(oauthTokenSecretUserDefaultsKey)  {
             let credential = BDBOAuth1Credential(token: token, secret: secret, expiration: nil)
             SwiftSpinner.show("Recovering user session", animated: true)
             TWApi.recoverUserSession(credential, completion: { (user, error) -> Void in
-                if let _ = user {
-                    self.userDidLogin()
+                if let user = user {
                     SwiftSpinner.hide()
+                    self.delegate?.UserDidLogIn(user)
                 }
             })
         }
@@ -42,14 +44,10 @@ class LoginViewController: TWBaseViewController {
 extension LoginViewController {
     func didPressedLoginButton() {
         TWApi.loginWithCompletion { (user, error) -> Void in
-            if let _ = user {
-                self.userDidLogin()
+            if let user = user {
+                self.delegate?.UserDidLogIn(user)
             }
         }
-    }
-    
-    func userDidLogin() {
-        self.presentViewController(UINavigationController(rootViewController: TimelineViewController()), animated: true, completion: nil)
     }
 }
 
@@ -63,4 +61,9 @@ extension LoginViewController {
         }
         return _loginButton
     }
+}
+
+
+protocol LoginViewControllerDelegate {
+    func UserDidLogIn(user: User)
 }

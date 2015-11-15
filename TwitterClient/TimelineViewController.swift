@@ -9,7 +9,6 @@
 import UIKit
 
 class TimelineViewController: TWBaseViewController {
-    private var _signOutButton: UIBarButtonItem!
     private var _composeButton: UIBarButtonItem!
     private var tweets = Array<Tweet>()
     private var highestId: Int? {
@@ -21,7 +20,6 @@ class TimelineViewController: TWBaseViewController {
     private var _refreshControl: UIRefreshControl!
     
     override func addSubviews() {
-        navigationItem.leftBarButtonItem = signOutButton
         navigationItem.rightBarButtonItem = composeButton
         view.addSubview(tableView)
     }
@@ -57,11 +55,6 @@ class TimelineViewController: TWBaseViewController {
 }
 
 extension TimelineViewController {
-    func didPressedSignoutButton() {
-        TWApi.logout()
-        dismissViewControllerAnimated(true, completion: nil)
-    }
-    
     func didPressedComposeButton() {
         let composeScreen = ComposeViewController()
         composeScreen.delegate = self
@@ -134,14 +127,6 @@ extension TimelineViewController: UITableViewDelegate {
 }
 
 extension TimelineViewController {
-    var signOutButton: UIBarButtonItem {
-        if _signOutButton == nil {
-            let v = UIBarButtonItem(title: "Sign Out", style: .Plain, target: self, action: "didPressedSignoutButton")
-            _signOutButton = v
-        }
-        return _signOutButton
-    }
-    
     var composeButton: UIBarButtonItem {
         if _composeButton == nil {
             let v = UIBarButtonItem(barButtonSystemItem: .Compose, target: self, action: "didPressedComposeButton")

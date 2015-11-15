@@ -38,5 +38,4 @@ class User: NSObject {
     init(dictionary: NSDictionary) {
         self.dictionary = dictionary
     }
-
 }
