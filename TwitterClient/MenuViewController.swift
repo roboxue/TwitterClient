@@ -11,7 +11,7 @@ import UIKit
 class MenuViewController: TWBaseViewController {
     private var _tableView: UITableView!
     private var _viewControllers: [UIViewController]!
-    private var _loginScreen: LoginViewController!
+    private var _profileScreen: ProfileViewController!
     private var _homeTimelineScreen: TimelineViewController!
     private var _mentionsTimelineScreen: TimelineViewController!
 
@@ -96,7 +96,7 @@ extension MenuViewController {
     var viewControllers: [UIViewController] {
         if _viewControllers == nil {
             _viewControllers = [
-                loginScreen,
+                UINavigationController(rootViewController: profileScreen),
                 UINavigationController(rootViewController: homeTimelineScreen),
                 UINavigationController(rootViewController: mentionsTimelineScreen)
             ]
@@ -104,11 +104,11 @@ extension MenuViewController {
         return _viewControllers
     }
 
-    var loginScreen: LoginViewController {
-        if _loginScreen == nil {
-            _loginScreen = LoginViewController()
+    var profileScreen: ProfileViewController {
+        if _profileScreen == nil {
+            _profileScreen = ProfileViewController()
         }
-        return _loginScreen
+        return _profileScreen
     }
     
     var homeTimelineScreen: TimelineViewController {

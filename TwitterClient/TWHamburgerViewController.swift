@@ -66,7 +66,7 @@ class TWHamburgerViewController: TWBaseViewController {
             make.width.equalTo(view).multipliedBy(leftViewWidthRatio)
         }
         centerView.snp_makeConstraints { (make) -> Void in
-            make.left.equalTo(view)
+            make.left.equalTo(leftView.snp_right)
             make.top.equalTo(view)
             make.bottom.equalTo(view)
             make.width.equalTo(view)
@@ -99,6 +99,7 @@ extension TWHamburgerViewController {
         let handler = { () -> Void in
             self.leftViewRightConstraint.updateOffset(0)
             self.leftView.layoutIfNeeded()
+            self.centerView.layoutIfNeeded()
         }
         if animated {
             UIView.animateWithDuration(0.5, animations: handler)
@@ -111,11 +112,20 @@ extension TWHamburgerViewController {
         let handler = { () -> Void in
             self.leftViewRightConstraint.updateOffset(self.view.frame.size.width * CGFloat(self.leftViewWidthRatio))
             self.leftView.layoutIfNeeded()
+            self.centerView.layoutIfNeeded()
         }
         if animated {
             UIView.animateWithDuration(0.5, animations: handler)
         } else {
             handler()
+        }
+    }
+    
+    func toggle() {
+        if leftView.frame.origin.x < 0 {
+            openLeftView(true)
+        } else {
+            closeLeftView(true)
         }
     }
 }

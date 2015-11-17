@@ -26,13 +26,29 @@ class User: NSObject {
     }()
     
     lazy var tagline: String? = {() -> String? in
-        return self.dictionary["descirption"] as? String
+        return self.dictionary["description"] as? String
     }()
 
     lazy var id: Int? = { () -> Int? in
         return self.dictionary["id"] as? Int
     }()
-
+    
+    lazy var followersCount: Int? = { () -> Int? in
+        return self.dictionary["followers_count"] as? Int
+    }()
+    
+    lazy var friendsCount: Int? = { () -> Int? in
+        return self.dictionary["friends_count"] as? Int
+    }()
+    
+    lazy var profileBackgroundColor: String?  = { () -> String? in
+        return self.dictionary["profile_background_color"] as? String
+    }()
+    
+    lazy var statusesCount: Int? = { () -> Int? in
+        return self.dictionary["statuses_count"] as? Int
+    }()
+    
     private let dictionary: NSDictionary
     
     init(dictionary: NSDictionary) {

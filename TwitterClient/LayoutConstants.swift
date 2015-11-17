@@ -9,10 +9,10 @@
 import UIKit
 
 let TWBackgroundColor = UIColor.whiteColor()
-let TWBlue = UIColor(red: 64.0 / 255.0, green: 153.0 / 255.0, blue: 255.0 / 255.0, alpha: 1.0)
-let TWHighlightColor = UIColor.orangeColor()
-let TWSecondaryTextColor = UIColor.lightGrayColor()
-let TWRetweetedColor = UIColor(red: 22.0 / 255.0, green: 160.0 / 255.0, blue: 133.0 / 255.0, alpha: 1.0)
+let TWBlue = UIColor(rgba: "#55acee")
+let TWHighlightColor = UIColor(rgba: "#E81C4F")
+let TWSecondaryTextColor = UIColor(rgba: "#AAB8C2")
+let TWRetweetedColor = UIColor(rgba: "#19CF86")
 let TWSpanSize = 5
 let TWContentFont = UIFont(name: "HelveticaNeue", size: 13)!
 let TWContentFontBold = UIFont(name: "HelveticaNeue-Bold", size: 15)!

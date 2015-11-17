@@ -10,24 +10,46 @@ import Foundation
 import BDBOAuth1Manager
 import Alamofire
 import SwiftSpinner
+import AlamofireImage
 
 private let twitterConsumerKey = "K9ryTdR2ukcBMY3VKhacHRrJb"
 private let twitterConsumerSecret = "R8r4Om9WRL9A4ouHJjJ1U2F6FaIkviK14N7ddFM1tpmLsyorA5"
 private let twitterBaseUrl = NSURL(string: "https://api.twitter.com")!
 let oauthTokenUserDefaultsKey = "oauth_token"
 let oauthTokenSecretUserDefaultsKey = "oauth_token_secret"
+let userIdDefaultKey = "user_id"
 
 class TwitterServiceClient: BDBOAuth1RequestOperationManager {
-    private var _currentUser: User?
-    private(set) var currentUser: User? {
+    private let imageCache = AutoPurgingImageCache()
+    private var _userIdentifier: Int?
+    private(set) var userIdentifier: Int? {
         get {
-            return _currentUser
+            let defaults = NSUserDefaults.standardUserDefaults()
+            let id = defaults.integerForKey(userIdDefaultKey)
+            if id != 0 {
+                _userIdentifier = id
+            }
+            return _userIdentifier
         }
         set {
-            _currentUser = newValue
+            _userIdentifier = newValue
+            if let id = newValue {
+                NSUserDefaults.standardUserDefaults().setInteger(id, forKey: userIdDefaultKey)
+            } else {
+                NSUserDefaults.standardUserDefaults().removeObjectForKey(userIdDefaultKey)
+            }
+
         }
     }
     private var loginCompletion: ((User?, NSError?) -> Void)!
+    var currentUser: User?
+    var oauthCredential: BDBOAuth1Credential? {
+        if let token = NSUserDefaults.standardUserDefaults().stringForKey(oauthTokenUserDefaultsKey), secret = NSUserDefaults.standardUserDefaults().stringForKey(oauthTokenSecretUserDefaultsKey) {
+            return BDBOAuth1Credential(token: token, secret: secret, expiration: nil)
+        } else {
+            return nil
+        }
+    }
     
     func loginWithCompletion(completion: (User?, NSError?) -> Void) {
         loginCompletion = completion
@@ -50,7 +72,18 @@ class TwitterServiceClient: BDBOAuth1RequestOperationManager {
     
     func recoverUserSession(credential: BDBOAuth1Credential, completion: (User?, NSError?) -> Void) {
         self.requestSerializer.saveAccessToken(credential)
-        self.verifyCredentials(completion)
+        let handler = { (user: User?, error: NSError?) -> Void in
+            if let user = user {
+                self.currentUser = user
+            }
+            completion(user, error)
+        }
+        if let id = userIdentifier {
+            self.showUser(id, completion: handler)
+        } else {
+            self.verifyCredentials(handler)
+        }
+
     }
     
     func updateStatus(tweet: String, replyTo: Int? = nil, completion: (Tweet?, NSError?) -> Void) {
@@ -90,8 +123,18 @@ class TwitterServiceClient: BDBOAuth1RequestOperationManager {
         }
     }
     
+    func showUser(id: Int, completion: (User?, NSError?) -> Void) {
+        GET("1.1/users/show.json", parameters: ["user_id": id], success: { (operation, response) -> Void in
+            let user = User(dictionary: response as! NSDictionary)
+            completion(user, nil)
+            }) { (operation, error) -> Void in
+                self.handleError("showUser", error: error)
+                completion(nil, error)
+        }
+    }
+    
     func logout() {
-        currentUser = nil
+        userIdentifier = nil
         NSUserDefaults.standardUserDefaults().removeObjectForKey(oauthTokenUserDefaultsKey)
         NSUserDefaults.standardUserDefaults().removeObjectForKey(oauthTokenSecretUserDefaultsKey)
         requestSerializer.removeAccessToken()
@@ -127,7 +170,7 @@ class TwitterServiceClient: BDBOAuth1RequestOperationManager {
     private func verifyCredentials(completion: (User?, NSError?) -> Void) {
         self.GET("1.1/account/verify_credentials.json", parameters: nil, success: { (operation, response) -> Void in
             let user = User(dictionary: response as! NSDictionary)
-            self.currentUser = user
+            self.userIdentifier = user.id!
             completion(user, nil)
         }) { (operation, error) -> Void in
             self.handleError("verify credential", error: error)

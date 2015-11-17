@@ -7,8 +7,6 @@
 //
 
 import UIKit
-import BDBOAuth1Manager
-import SwiftSpinner
 
 class LoginViewController: TWBaseViewController {
     private var _loginButton: UIButton!
@@ -28,15 +26,6 @@ class LoginViewController: TWBaseViewController {
     override func refreshUI() {
         if let user = TWApi.currentUser {
             delegate?.UserDidLogIn(user)
-        } else if let token = NSUserDefaults.standardUserDefaults().stringForKey(oauthTokenUserDefaultsKey), secret = NSUserDefaults.standardUserDefaults().stringForKey(oauthTokenSecretUserDefaultsKey)  {
-            let credential = BDBOAuth1Credential(token: token, secret: secret, expiration: nil)
-            SwiftSpinner.show("Recovering user session", animated: true)
-            TWApi.recoverUserSession(credential, completion: { (user, error) -> Void in
-                if let user = user {
-                    SwiftSpinner.hide()
-                    self.delegate?.UserDidLogIn(user)
-                }
-            })
         }
     }
 }
