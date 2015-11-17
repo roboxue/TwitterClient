@@ -13,6 +13,7 @@ class TWHamburgerViewController: TWBaseViewController {
     private var _leftView: UIView!
     private var _centerView: UIView!
     private var _panGR: UIPanGestureRecognizer!
+    private var _closeMenuGR: UITapGestureRecognizer!
     private let leftViewWidthRatio = 0.8
     
     var originalLeftMargin: CGFloat!
@@ -86,46 +87,44 @@ extension TWHamburgerViewController {
             leftViewRightConstraint.updateOffset(translation.x + originalLeftMargin)
         case .Ended:
             if velocity.x > 0 {
-                openLeftView(true)
+                openLeftView()
             } else {
-                closeLeftView(true)
+                closeLeftView()
             }
         default:
             break
         }
     }
     
-    func closeLeftView(animated: Bool) {
-        let handler = { () -> Void in
+    func closeLeftView() {
+        UIView.animateWithDuration(0.5, animations: { () -> Void in
             self.leftViewRightConstraint.updateOffset(0)
             self.leftView.layoutIfNeeded()
             self.centerView.layoutIfNeeded()
-        }
-        if animated {
-            UIView.animateWithDuration(0.5, animations: handler)
-        } else {
-            handler()
-        }
+            self.centerView.removeGestureRecognizer(self.closeMenuGR)
+            self.centerView.subviews.forEach({ (v) -> () in
+                v.userInteractionEnabled = true
+            })
+        })
     }
     
-    func openLeftView(animated: Bool) {
-        let handler = { () -> Void in
+    func openLeftView() {
+        UIView.animateWithDuration(0.5, animations: { () -> Void in
             self.leftViewRightConstraint.updateOffset(self.view.frame.size.width * CGFloat(self.leftViewWidthRatio))
             self.leftView.layoutIfNeeded()
             self.centerView.layoutIfNeeded()
-        }
-        if animated {
-            UIView.animateWithDuration(0.5, animations: handler)
-        } else {
-            handler()
-        }
+            self.centerView.addGestureRecognizer(self.closeMenuGR)
+            self.centerView.subviews.forEach({ (v) -> () in
+                v.userInteractionEnabled = false
+            })
+        })
     }
     
     func toggle() {
         if leftView.frame.origin.x < 0 {
-            openLeftView(true)
+            openLeftView()
         } else {
-            closeLeftView(true)
+            closeLeftView()
         }
     }
 }
@@ -142,7 +141,7 @@ extension TWHamburgerViewController {
     var centerView: UIView {
         if _centerView == nil {
             let v = UIView()
-            v.addGestureRecognizer(panGR)
+//            v.addGestureRecognizer(panGR)
             _centerView = v
         }
         return _centerView
@@ -154,5 +153,13 @@ extension TWHamburgerViewController {
             _panGR = gr
         }
         return _panGR
+    }
+    
+    var closeMenuGR: UITapGestureRecognizer {
+        if _closeMenuGR == nil {
+            let gr = UITapGestureRecognizer(target: self, action: "closeLeftView")
+            _closeMenuGR = gr
+        }
+        return _closeMenuGR
     }
 }

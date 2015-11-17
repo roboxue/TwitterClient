@@ -20,9 +20,9 @@ let oauthTokenSecretUserDefaultsKey = "oauth_token_secret"
 let userIdDefaultKey = "user_id"
 
 class TwitterServiceClient: BDBOAuth1RequestOperationManager {
-    private let imageCache = AutoPurgingImageCache()
+    private let downloader = ImageDownloader(configuration: ImageDownloader.defaultURLSessionConfiguration(), downloadPrioritization: .FIFO, maximumActiveDownloads: 5, imageCache: AutoPurgingImageCache())
     private var _userIdentifier: Int?
-    private(set) var userIdentifier: Int? {
+    private(set) var userIdentifier: Int! {
         get {
             let defaults = NSUserDefaults.standardUserDefaults()
             let id = defaults.integerForKey(userIdDefaultKey)
@@ -42,7 +42,11 @@ class TwitterServiceClient: BDBOAuth1RequestOperationManager {
         }
     }
     private var loginCompletion: ((User?, NSError?) -> Void)!
-    var currentUser: User?
+    var currentUser: User? {
+        didSet {
+            userIdentifier = currentUser?.id
+        }
+    }
     var oauthCredential: BDBOAuth1Credential? {
         if let token = NSUserDefaults.standardUserDefaults().stringForKey(oauthTokenUserDefaultsKey), secret = NSUserDefaults.standardUserDefaults().stringForKey(oauthTokenSecretUserDefaultsKey) {
             return BDBOAuth1Credential(token: token, secret: secret, expiration: nil)
@@ -64,26 +68,21 @@ class TwitterServiceClient: BDBOAuth1RequestOperationManager {
         fetchAccessTokenWithPath("oauth/access_token", method: "POST", requestToken: BDBOAuth1Credential(queryString: url.query), success: { (credential) -> Void in
             NSUserDefaults.standardUserDefaults().setObject(credential.token, forKey: oauthTokenUserDefaultsKey)
             NSUserDefaults.standardUserDefaults().setObject(credential.secret, forKey: oauthTokenSecretUserDefaultsKey)
-            self.recoverUserSession(credential, completion: self.loginCompletion)
+            self.recoverUserSession()
+            let handler = { (user: User?, error: NSError?) -> Void in
+                if let user = user {
+                    self.currentUser = user
+                }
+            }
+            self.verifyCredentials(handler)
+
         }) { (error) -> Void in
             self.handleError("get access token", error: error)
         }
     }
     
-    func recoverUserSession(credential: BDBOAuth1Credential, completion: (User?, NSError?) -> Void) {
-        self.requestSerializer.saveAccessToken(credential)
-        let handler = { (user: User?, error: NSError?) -> Void in
-            if let user = user {
-                self.currentUser = user
-            }
-            completion(user, error)
-        }
-        if let id = userIdentifier {
-            self.showUser(id, completion: handler)
-        } else {
-            self.verifyCredentials(handler)
-        }
-
+    func recoverUserSession() {
+        self.requestSerializer.saveAccessToken(oauthCredential)
     }
     
     func updateStatus(tweet: String, replyTo: Int? = nil, completion: (Tweet?, NSError?) -> Void) {
@@ -155,6 +154,16 @@ class TwitterServiceClient: BDBOAuth1RequestOperationManager {
             completion(tweets, nil)
         }) { (operation, error) -> Void in
             completion(nil, error)
+        }
+    }
+    
+    func fetchImage(URL: NSURL, completion: (UIImage?, NSError?) -> Void) {
+        downloader.downloadImage(URLRequest: NSURLRequest(URL: URL)) { (response) -> Void in
+            if let image = response.result.value {
+                completion(image, nil)
+            } else {
+                completion(nil, response.result.error!)
+            }
         }
     }
     

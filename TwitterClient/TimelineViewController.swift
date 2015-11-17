@@ -18,12 +18,10 @@ class TimelineViewController: TWBaseViewController {
     }
     private var _tableView: UITableView!
     private var _refreshControl: UIRefreshControl!
-    private var _menuBarButton: UIBarButtonItem!
     var source: TwitterTimelineSource!
     
     override func addSubviews() {
         navigationItem.rightBarButtonItem = composeButton
-        navigationItem.leftBarButtonItem = menuBarButton
         view.addSubview(tableView)
     }
     
@@ -88,6 +86,12 @@ extension TimelineViewController: TweetDelegate {
                 self.tableView.reloadData()
             }
         }
+    }
+    
+    func visit(userId: Int) {
+        let userScreen = ProfileViewController()
+        userScreen.userId = userId
+        navigationController?.pushViewController(userScreen, animated: true)
     }
 }
 
@@ -160,13 +164,5 @@ extension TimelineViewController {
             _refreshControl = v
         }
         return _refreshControl
-    }
-    
-    var menuBarButton: UIBarButtonItem {
-        if _menuBarButton == nil {
-            let v = UIBarButtonItem(image: UIImage(named: "Settings"), style: .Plain, target: self.navigationController?.parentViewController, action: "toggle")
-            _menuBarButton = v
-        }
-        return _menuBarButton
     }
 }

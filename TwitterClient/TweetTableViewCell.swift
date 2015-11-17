@@ -10,7 +10,7 @@ import UIKit
 import AlamofireImage
 
 class TweetTableViewCell: UITableViewCell {
-    private var _profileImage: UIImageView!
+    private var _profileImage: UIButton!
     private var _usernameLabel: UILabel!
     private var _screenameLabel: UILabel!
     private var _tweetLabel: UILabel!
@@ -101,7 +101,11 @@ class TweetTableViewCell: UITableViewCell {
     func initWithTweet(tweet: Tweet) {
         self.tweet = tweet
         if let profileImageUrl = tweet.user?.profileImageUrl {
-            profileImage.af_setImageWithURL(profileImageUrl, filter: RoundedCornersFilter(radius: 2.0))
+            TWApi.fetchImage(profileImageUrl) { (image, error) in
+                if let image = image {
+                    self.profileImage.setImage(image.af_imageWithRoundedCornerRadius(2.0), forState: .Normal)
+                }
+            }
         }
         usernameLabel.text = tweet.user?.name
         if let screenname = tweet.user?.screenname {
@@ -151,12 +155,19 @@ extension TweetTableViewCell {
     func didPressedRetweetButton() {
         delegate.retweet(tweet)
     }
+    
+    func didPressedUserProfileImage() {
+        delegate.visit(tweet.user!.id!)
+    }
 }
 
 extension TweetTableViewCell {
-    var profileImage: UIImageView {
+    var profileImage: UIButton {
         if _profileImage == nil {
-            let v = UIImageView()
+            let v = UIButton(type: .Custom)
+            v.contentHorizontalAlignment = .Fill
+            v.contentVerticalAlignment = .Fill
+            v.addTarget(self, action: "didPressedUserProfileImage", forControlEvents: .TouchUpInside)
             _profileImage = v
         }
         return _profileImage

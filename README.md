@@ -13,14 +13,14 @@ The following **required** functionality is completed:
 - [x] Profile page
    - [x] Contains the user header view
    - [x] Contains a section with the users basic stats: # tweets, # following, # followers
-- [ ] Home Timeline
-   - [ ] Tapping on a user image should bring up that user's profile page
+- [x] Home Timeline
+   - [x] Tapping on a user image should bring up that user's profile page
 
 The following **optional** features are implemented:
 
-- [ ] Profile Page
-   - [ ] Implement the paging view for the user description.
-   - [ ] As the paging view moves, increase the opacity of the background screen. See the actual Twitter app for this effect
+- [x] Profile Page
+   - [x] Implement the paging view for the user description.
+   - [x] As the paging view moves, increase the opacity of the background screen. See the actual Twitter app for this effect
    - [ ] Pulling down the profile page should blur and resize the header image.
 - [ ] Account switching
    - [ ] Long press on tab bar to bring up Account view with animation

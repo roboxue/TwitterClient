@@ -45,8 +45,30 @@ class User: NSObject {
         return self.dictionary["profile_background_color"] as? String
     }()
     
+    lazy var profileLinkColor: String? = { () -> String? in
+        return self.dictionary["profile_link_color"] as? String
+    }()
+    
     lazy var statusesCount: Int? = { () -> Int? in
         return self.dictionary["statuses_count"] as? Int
+    }()
+    
+    lazy var profileBannerUrl: NSURL? = { () -> NSURL? in
+        if let url = self.dictionary["profile_banner_url"] as? String {
+            return NSURL(string: url)
+        } else {
+            return nil
+        }
+    }()
+    
+    lazy var tweet: Tweet? = { () -> Tweet? in
+        if let tweetJson = self.dictionary["status"] as? NSDictionary {
+            let tweet = Tweet(dictionary: tweetJson)
+            tweet.user = self
+            return tweet
+        } else {
+            return nil
+        }
     }()
     
     private let dictionary: NSDictionary

@@ -9,11 +9,19 @@
 import UIKit
 
 class Tweet: NSObject {
+    var _user: User?
     var user: User? {
-        if let userD = self.dictionary["user"] as? NSDictionary {
-            return User(dictionary: userD)
-        } else {
-            return nil
+        get {
+            if let user = _user {
+                return user
+            } else if let userD = self.dictionary["user"] as? NSDictionary {
+                return User(dictionary: userD)
+            } else {
+                return nil
+            }
+        }
+        set {
+            _user = newValue
         }
     }
     
@@ -67,4 +75,6 @@ protocol TweetDelegate {
     func reply(tweet: Tweet)
     
     func fav(tweet: Tweet)
+    
+    func visit(userId: Int)
 }

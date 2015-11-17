@@ -30,13 +30,15 @@ class MenuViewController: TWBaseViewController {
     
     override func initializeUI() {
         if let hamburgerVC = (navigationController ?? self).parentViewController as? TWHamburgerViewController {
-            if let _ = TWApi.currentUser {
-                hamburgerVC.centerViewController = viewControllers[1]
-            } else {
-                hamburgerVC.centerViewController = viewControllers[0]
-            }
+            hamburgerVC.centerViewController = viewControllers[1]
         }
         automaticallyAdjustsScrollViewInsets = false
+    }
+    
+    override func refreshUI() {
+        if TWApi.userIdentifier == nil {
+            presentViewController(LoginViewController(), animated: true, completion: nil)
+        }
     }
 }
 
@@ -75,7 +77,7 @@ extension MenuViewController: UITableViewDelegate {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         if let hamburgerVC = (navigationController ?? self).parentViewController as? TWHamburgerViewController {
             hamburgerVC.centerViewController = viewControllers[indexPath.row]
-            hamburgerVC.closeLeftView(true)
+            hamburgerVC.closeLeftView()
         }
     }
 }
@@ -86,7 +88,6 @@ extension MenuViewController {
             let v = UITableView()
             v.dataSource = self
             v.delegate = self
-            v.backgroundColor = TWBlue
             v.tableFooterView = UIView()
             _tableView = v
         }
@@ -96,9 +97,9 @@ extension MenuViewController {
     var viewControllers: [UIViewController] {
         if _viewControllers == nil {
             _viewControllers = [
-                UINavigationController(rootViewController: profileScreen),
-                UINavigationController(rootViewController: homeTimelineScreen),
-                UINavigationController(rootViewController: mentionsTimelineScreen)
+                MenuEnabledNavigationViewController(rootViewController: profileScreen),
+                MenuEnabledNavigationViewController(rootViewController: homeTimelineScreen),
+                MenuEnabledNavigationViewController(rootViewController: mentionsTimelineScreen)
             ]
         }
         return _viewControllers
@@ -107,6 +108,7 @@ extension MenuViewController {
     var profileScreen: ProfileViewController {
         if _profileScreen == nil {
             _profileScreen = ProfileViewController()
+            _profileScreen.userId = TWApi.userIdentifier
         }
         return _profileScreen
     }
