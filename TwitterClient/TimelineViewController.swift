@@ -18,6 +18,7 @@ class TimelineViewController: TWBaseViewController {
     }
     private var _tableView: UITableView!
     private var _refreshControl: UIRefreshControl!
+    var source: TwitterTimelineSource!
     
     override func addSubviews() {
         navigationItem.rightBarButtonItem = composeButton
@@ -34,7 +35,7 @@ class TimelineViewController: TWBaseViewController {
     }
     
     override func refreshUI() {
-        TWApi.getTimeline(highestId) { (tweets, _) -> Void in
+        TWApi.getTimeline(source, since_id: highestId) { (tweets, _) -> Void in
             if let tweets = tweets {
                 self.refreshControl.endRefreshing()
                 self.tweets = Set(self.tweets).union(tweets).sort({ (left, right) -> Bool in

@@ -13,6 +13,7 @@ class MenuViewController: TWBaseViewController {
     private var _viewControllers: [UIViewController]!
     private var _loginScreen: LoginViewController!
     private var _homeTimelineScreen: TimelineViewController!
+    private var _mentionsTimelineScreen: TimelineViewController!
 
     override func addSubviews() {
         view.addSubview(tableView)
@@ -41,7 +42,7 @@ class MenuViewController: TWBaseViewController {
 
 extension MenuViewController: UITableViewDataSource {
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 2
+        return viewControllers.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -59,6 +60,9 @@ extension MenuViewController: UITableViewDataSource {
         case 1:
             // Home timeline
             cell.textLabel?.text = "Home"
+        case 2:
+            // Home timeline
+            cell.textLabel?.text = "Mentions"
         default:
             break
         }
@@ -93,7 +97,8 @@ extension MenuViewController {
         if _viewControllers == nil {
             _viewControllers = [
                 loginScreen,
-                UINavigationController(rootViewController: homeTimelineScreen)
+                UINavigationController(rootViewController: homeTimelineScreen),
+                UINavigationController(rootViewController: mentionsTimelineScreen)
             ]
         }
         return _viewControllers
@@ -109,7 +114,16 @@ extension MenuViewController {
     var homeTimelineScreen: TimelineViewController {
         if _homeTimelineScreen == nil {
             _homeTimelineScreen = TimelineViewController()
+            _homeTimelineScreen.source = .Home
         }
         return _homeTimelineScreen
+    }
+
+    var mentionsTimelineScreen: TimelineViewController {
+        if _mentionsTimelineScreen == nil {
+            _mentionsTimelineScreen = TimelineViewController()
+            _mentionsTimelineScreen.source = .Mentions
+        }
+        return _mentionsTimelineScreen
     }
 }

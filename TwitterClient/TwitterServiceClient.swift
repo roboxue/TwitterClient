@@ -97,7 +97,7 @@ class TwitterServiceClient: BDBOAuth1RequestOperationManager {
         requestSerializer.removeAccessToken()
     }
     
-    func getTimeline(since_id: Int? = nil, max_id: Int? = nil, completion: ([Tweet]?, NSError?) -> Void) {
+    func getTimeline(source: TwitterTimelineSource, since_id: Int? = nil, max_id: Int? = nil, completion: ([Tweet]?, NSError?) -> Void) {
         var parameters = ["count": "20"]
         if let max_id = max_id {
             parameters["max_id"] = String(max_id)
@@ -106,7 +106,8 @@ class TwitterServiceClient: BDBOAuth1RequestOperationManager {
             parameters["since_id"] = String(since_id)
         }
         
-        GET("1.1/statuses/home_timeline.json", parameters: parameters, success: { (operation, response) -> Void in
+        
+        GET(source.url, parameters: parameters, success: { (operation, response) -> Void in
             let tweets = Tweet.tweets(response as! [NSDictionary])
             completion(tweets, nil)
         }) { (operation, error) -> Void in
@@ -143,3 +144,17 @@ class TwitterServiceClient: BDBOAuth1RequestOperationManager {
 }
 
 let TWApi = TwitterServiceClient(baseURL: twitterBaseUrl, consumerKey: twitterConsumerKey, consumerSecret: twitterConsumerSecret)
+
+enum TwitterTimelineSource {
+    case Mentions
+    case Home
+    
+    var url: String {
+        switch self {
+        case .Mentions:
+            return "1.1/statuses/mentions_timeline.json"
+        case .Home:
+            return "1.1/statuses/home_timeline.json"
+        }
+    }
+}
